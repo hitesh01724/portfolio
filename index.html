@@ -1,1013 +1,1523 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hitesh Kumar — Python Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-<style>
-  /* ─── TOKENS ─────────────────────────────────── */
-  :root {
-    --bg:        #0a0e17;
-    --bg2:       #111827;
-    --bg3:       #1a2235;
-    --surface:   #161d2e;
-    --border:    rgba(99,210,255,0.12);
-    --accent:    #3de8b0;
-    --accent2:   #63d2ff;
-    --accent3:   #ff6b6b;
-    --text:      #e2e8f5;
-    --muted:     #7b8db0;
-    --glow:      rgba(61,232,176,0.18);
-    --glow2:     rgba(99,210,255,0.14);
-    --card:      rgba(22,29,46,0.85);
-    --radius:    14px;
-    --mono:      'JetBrains Mono', monospace;
-    --sans:      'Syne', sans-serif;
-  }
-  [data-theme="light"] {
-    --bg:        #f0f4ff;
-    --bg2:       #e4eaf8;
-    --bg3:       #d8e2f5;
-    --surface:   #ffffff;
-    --border:    rgba(30,100,180,0.13);
-    --accent:    #0a9e72;
-    --accent2:   #1a72c0;
-    --accent3:   #d63c3c;
-    --text:      #0f172a;
-    --muted:     #4a5a80;
-    --glow:      rgba(10,158,114,0.1);
-    --glow2:     rgba(26,114,192,0.1);
-    --card:      rgba(255,255,255,0.9);
-  }
-
-  /* ─── RESET ──────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    transition: background 0.4s, color 0.4s;
-  }
-  a { color: inherit; text-decoration: none; }
-  ul { list-style: none; }
-
-  /* ─── SCROLLBAR ───────────────────────────────── */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
-
-  /* ─── NOISE OVERLAY ──────────────────────────── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.5;
-  }
-
-  /* ─── NAV ────────────────────────────────────── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 2.5rem;
-    background: rgba(10,14,23,0.75);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    transition: background 0.4s;
-  }
-  [data-theme="light"] nav { background: rgba(240,244,255,0.8); }
-
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 0.95rem;
-    color: var(--accent);
-    letter-spacing: 0.04em;
-  }
-  .nav-logo span { color: var(--muted); }
-
-  .nav-links {
-    display: flex; gap: 2rem; align-items: center;
-  }
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px;
-    background: var(--accent); transition: width 0.3s;
-  }
-  .nav-links a:hover { color: var(--accent); }
-  .nav-links a:hover::after { width: 100%; }
-
-  /* ─── THEME TOGGLE ────────────────────────────── */
-  .theme-btn {
-    width: 38px; height: 22px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 99px;
-    cursor: pointer;
-    position: relative;
-    transition: background 0.3s;
-    flex-shrink: 0;
-  }
-  .theme-btn::after {
-    content: '';
-    position: absolute; top: 3px; left: 3px;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: var(--accent);
-    transition: transform 0.3s, background 0.3s;
-  }
-  [data-theme="light"] .theme-btn::after { transform: translateX(16px); }
-
-  /* ─── HERO ────────────────────────────────────── */
-  #hero {
-    min-height: 100vh;
-    display: flex; align-items: center;
-    padding: 8rem 2.5rem 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    align-items: center;
-  }
-
-  /* grid bg lines */
-  #hero::after {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-    pointer-events: none;
-  }
-
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 99px;
-    padding: 0.3rem 0.9rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.08em;
-    animation: fadeUp 0.7s ease both;
-  }
-  .hero-badge .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 1.8s infinite;
-  }
-
-  .hero-name {
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    font-weight: 800;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    animation: fadeUp 0.7s 0.1s ease both;
-  }
-  .hero-name .accent-line {
-    display: block;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .hero-tagline {
-    margin-top: 1.2rem;
-    font-family: var(--mono);
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.8;
-    animation: fadeUp 0.7s 0.2s ease both;
-    max-width: 420px;
-  }
-  .hero-tagline .hl { color: var(--accent2); }
-
-  .hero-cta {
-    display: flex; gap: 1rem; margin-top: 2.5rem;
-    animation: fadeUp 0.7s 0.3s ease both;
-    flex-wrap: wrap;
-  }
-  .btn-primary {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    padding: 0.8rem 1.8rem;
-    background: var(--accent);
-    color: #0a0e17;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 24px var(--glow);
-    text-transform: uppercase;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px var(--glow); }
-
-  .btn-secondary {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    padding: 0.8rem 1.8rem;
-    background: transparent;
-    color: var(--text);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    text-transform: uppercase;
-  }
-  .btn-secondary:hover { border-color: var(--accent2); background: var(--glow2); }
-
-  /* ─── TERMINAL CARD ──────────────────────────── */
-  .terminal-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
-    animation: fadeUp 0.9s 0.3s ease both;
-    position: relative; z-index: 1;
-  }
-  .terminal-bar {
-    display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-  }
-  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .d1 { background: #ff5f57; }
-  .d2 { background: #ffbd2e; }
-  .d3 { background: #28c840; }
-  .terminal-title {
-    font-family: var(--mono); font-size: 0.72rem;
-    color: var(--muted); margin-left: auto; margin-right: auto;
-    letter-spacing: 0.05em;
-  }
-  .terminal-body {
-    padding: 1.4rem 1.6rem;
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    line-height: 2.0;
-  }
-  .t-prompt { color: var(--accent); }
-  .t-cmd { color: var(--text); }
-  .t-comment { color: var(--muted); }
-  .t-string { color: var(--accent2); }
-  .t-num { color: var(--accent3); }
-  .t-key { color: #c792ea; }
-  .cursor {
-    display: inline-block; width: 8px; height: 14px;
-    background: var(--accent); vertical-align: middle;
-    animation: blink 1s step-end infinite;
-  }
-
-  /* ─── SECTION COMMONS ────────────────────────── */
-  section { padding: 6rem 2.5rem; position: relative; z-index: 1; }
-  .container { max-width: 1200px; margin: 0 auto; }
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 0.6rem;
-  }
-  .section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-  }
-  .section-sub {
-    color: var(--muted);
-    font-size: 0.95rem;
-    max-width: 520px;
-    line-height: 1.7;
-    margin-bottom: 3.5rem;
-  }
-  .divider {
-    width: 50px; height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    margin-bottom: 3rem;
-  }
-
-  /* ─── ABOUT ──────────────────────────────────── */
-  #about { background: var(--bg2); }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 5rem;
-    align-items: center;
-  }
-  .about-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
-  }
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.4rem;
-    text-align: center;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-  .stat-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-  .stat-num {
-    font-family: var(--mono);
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 0.3rem;
-  }
-  .stat-label { font-size: 0.8rem; color: var(--muted); }
-  .about-text p {
-    color: var(--muted);
-    line-height: 1.85;
-    margin-bottom: 1.2rem;
-    font-size: 0.95rem;
-  }
-  .about-text p strong { color: var(--text); }
-  .about-contact {
-    display: flex; flex-direction: column; gap: 0.6rem;
-    margin-top: 1.8rem;
-  }
-  .contact-item {
-    display: flex; align-items: center; gap: 0.8rem;
-    font-family: var(--mono); font-size: 0.8rem; color: var(--muted);
-  }
-  .contact-item .icon { color: var(--accent2); font-size: 1rem; }
-
-  /* ─── SKILLS ─────────────────────────────────── */
-  #skills {}
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-  .skill-group {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.8rem;
-    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-  }
-  .skill-group:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px var(--glow);
-  }
-  .skill-group-icon { font-size: 1.8rem; margin-bottom: 1rem; }
-  .skill-group-title {
-    font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem;
-    color: var(--accent2); letter-spacing: 0.05em;
-  }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .tag {
-    font-family: var(--mono); font-size: 0.72rem;
-    padding: 0.3rem 0.75rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .tag:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* ─── EXPERIENCE ─────────────────────────────── */
-  #experience { background: var(--bg2); }
-  .timeline { position: relative; }
-  .timeline::before {
-    content: '';
-    position: absolute; left: 16px; top: 0; bottom: 0;
-    width: 1px; background: var(--border);
-  }
-  .exp-item { display: flex; gap: 2rem; margin-bottom: 3rem; }
-  .exp-dot-wrap {
-    flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
-    position: relative; z-index: 1;
-  }
-  .exp-dot {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--bg3);
-    border: 2px solid var(--accent);
-    display: grid; place-items: center;
-    box-shadow: 0 0 16px var(--glow);
-    font-size: 0.85rem;
-  }
-  .exp-card {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.8rem;
-    transition: border-color 0.3s;
-  }
-  .exp-card:hover { border-color: var(--accent); }
-  .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.4rem; }
-  .exp-role { font-size: 1.05rem; font-weight: 700; }
-  .exp-period {
-    font-family: var(--mono); font-size: 0.72rem;
-    color: var(--accent); padding: 0.25rem 0.7rem;
-    background: var(--glow); border-radius: 99px;
-    border: 1px solid var(--accent);
-  }
-  .exp-company { color: var(--accent2); font-size: 0.88rem; margin-bottom: 1.2rem; font-weight: 600; }
-  .exp-bullets { display: flex; flex-direction: column; gap: 0.6rem; }
-  .exp-bullet {
-    display: flex; gap: 0.8rem; align-items: flex-start;
-    font-size: 0.86rem; color: var(--muted); line-height: 1.6;
-  }
-  .exp-bullet::before {
-    content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 1px;
-  }
-
-  /* ─── PROJECTS / HIGHLIGHT ───────────────────── */
-  #projects {}
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-  }
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.8rem;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-  }
-  .project-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .project-card:hover::before { transform: scaleX(1); }
-  .project-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  }
-  .project-num {
-    font-family: var(--mono); font-size: 3rem; font-weight: 700;
-    color: var(--border); position: absolute; top: 1rem; right: 1.4rem;
-    line-height: 1; user-select: none;
-    transition: color 0.3s;
-  }
-  .project-card:hover .project-num { color: var(--glow2); }
-  .project-icon { font-size: 2rem; margin-bottom: 1rem; }
-  .project-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
-  .project-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
-  .project-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .tech-tag {
-    font-family: var(--mono); font-size: 0.68rem;
-    padding: 0.2rem 0.6rem;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--accent2);
-    border-radius: 4px;
-  }
-
-  /* ─── EDUCATION ──────────────────────────────── */
-  #education { background: var(--bg2); }
-  .edu-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 2rem;
-    display: flex; gap: 2rem; align-items: center;
-    max-width: 700px;
-    transition: border-color 0.3s;
-  }
-  .edu-card:hover { border-color: var(--accent); }
-  .edu-icon { font-size: 2.5rem; }
-  .edu-degree { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
-  .edu-school { color: var(--accent2); font-size: 0.88rem; margin-bottom: 0.3rem; }
-  .edu-location { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
-
-  /* ─── CONTACT ────────────────────────────────── */
-  #contact { text-align: center; }
-  .contact-box {
-    max-width: 600px; margin: 0 auto;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 3.5rem 3rem;
-    box-shadow: 0 0 60px var(--glow);
-  }
-  .contact-box .section-title { font-size: 2.5rem; }
-  .contact-links {
-    display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem;
-    margin-top: 2.5rem;
-  }
-  .contact-link {
-    display: flex; align-items: center; gap: 0.6rem;
-    font-family: var(--mono); font-size: 0.8rem;
-    color: var(--muted);
-    padding: 0.75rem 1.4rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    transition: border-color 0.3s, color 0.3s, background 0.3s;
-  }
-  .contact-link:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--glow);
-  }
-
-  /* ─── FOOTER ─────────────────────────────────── */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-  }
-
-  /* ─── ANIMATIONS ─────────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--glow); }
-    50% { opacity: 0.7; box-shadow: 0 0 0 4px var(--glow); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  /* ─── SCROLL REVEAL ──────────────────────────── */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-
-  /* ─── RESPONSIVE ─────────────────────────────── */
-  @media (max-width: 900px) {
-    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    nav { padding: 1rem 1.2rem; }
-    .nav-links { gap: 1.2rem; }
-    .nav-links a { font-size: 0.72rem; }
-  }
-  @media (max-width: 600px) {
-    section { padding: 4rem 1.2rem; }
-    #hero { padding: 7rem 1.2rem 3rem; }
-    .nav-links { display: none; }
-    .exp-item { flex-direction: column; gap: 1rem; }
-    .timeline::before { display: none; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo"><span>~/</span>hitesh-kumar</div>
-  <div style="display:flex;align-items:center;gap:1.5rem;">
-    <ul class="nav-links">
-      <li><a href="#about">about</a></li>
-      <li><a href="#skills">skills</a></li>
-      <li><a href="#experience">experience</a></li>
-      <li><a href="#projects">projects</a></li>
-      <li><a href="#contact">contact</a></li>
-    </ul>
-    <button class="theme-btn" id="themeToggle" title="Toggle theme"></button>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-grid">
-    <div>
-      <div class="hero-badge"><span class="dot"></span> Available for opportunities</div>
-      <h1 class="hero-name">
-        Hitesh<br>
-        <span class="accent-line">Kumar</span>
-      </h1>
-      <p class="hero-tagline">
-        Python Developer · <span class="hl">Backend Architect</span> · GenAI Engineer<br>
-        3+ years building scalable APIs, ETL pipelines,<br>
-        and LLM-powered applications.
-      </p>
-      <div class="hero-cta">
-        <a class="btn-primary" href="#contact">get in touch</a>
-        <a class="btn-secondary" href="#experience">view work ↓</a>
-      </div>
-    </div>
-    <div class="terminal-card">
-      <div class="terminal-bar">
-        <div class="terminal-dot d1"></div>
-        <div class="terminal-dot d2"></div>
-        <div class="terminal-dot d3"></div>
-        <div class="terminal-title">hitesh.py</div>
-      </div>
-      <div class="terminal-body">
-        <div><span class="t-prompt">❯ </span><span class="t-cmd">python hitesh.py</span></div>
-        <br>
-        <div><span class="t-key">class</span> <span class="t-string">HiteshKumar</span>:</div>
-        <div>&nbsp;&nbsp;<span class="t-comment"># Python Developer | GenAI Enthusiast</span></div>
-        <br>
-        <div>&nbsp;&nbsp;<span class="t-key">experience</span> = <span class="t-num">3</span><span class="t-comment"> # years+</span></div>
-        <div>&nbsp;&nbsp;<span class="t-key">stack</span> = [</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Django"</span>, <span class="t-string">"FastAPI"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"LangChain"</span>, <span class="t-string">"LangGraph"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Airflow"</span>, <span class="t-string">"AWS"</span></div>
-        <div>&nbsp;&nbsp;]</div>
-        <div>&nbsp;&nbsp;<span class="t-key">location</span> = <span class="t-string">"Ahmedabad, India"</span></div>
-        <br>
-        <div>&nbsp;&nbsp;<span class="t-key">passion</span> = <span class="t-string">"Clean code &</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">scalable systems"</span></div>
-        <br>
-        <div><span class="t-prompt">❯ </span><span class="cursor"></span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="reveal">
-        <div class="about-stats">
-          <div class="stat-card">
-            <div class="stat-num">3+</div>
-            <div class="stat-label">Years Experience</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">40%</div>
-            <div class="stat-label">Latency Reduced</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">90%+</div>
-            <div class="stat-label">Test Coverage</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">∞</div>
-            <div class="stat-label">Lines of Coffee</div>
-          </div>
-        </div>
-      </div>
-      <div class="reveal">
-        <div class="section-label">// about_me</div>
-        <h2 class="section-title">Backend Dev<br>meets AI Builder</h2>
-        <div class="divider"></div>
-        <div class="about-text">
-          <p>I'm a Python developer with <strong>3+ years</strong> of experience crafting robust backend systems using <strong>Django, Flask, and FastAPI</strong>. My work spans REST APIs, real-time WebSocket systems, and data pipelines powered by Apache Airflow.</p>
-          <p>Recently, I've been deeply immersed in <strong>Generative AI</strong> — building conversational bots, product recommendation engines, and RAG-based systems using <strong>LangChain and LangGraph</strong>. I thrive at the intersection of clean architecture and emerging AI capabilities.</p>
-          <p>I'm passionate about <strong>performance optimization</strong>, having reduced response times from 20 minutes to under one second, and maintaining high-quality code with thorough testing.</p>
-        </div>
-        <div class="about-contact">
-          <div class="contact-item"><span class="icon">📍</span> Ahmedabad, Gujarat, India</div>
-          <div class="contact-item"><span class="icon">📞</span> +91 9057831452</div>
-          <div class="contact-item"><span class="icon">✉️</span> hiteshkumar01724@gmail.com</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="container">
-    <div class="reveal">
-      <div class="section-label">// tech_stack</div>
-      <h2 class="section-title">Skills &amp; Tools</h2>
-      <div class="divider"></div>
-    </div>
-    <div class="skills-grid">
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">🐍</div>
-        <div class="skill-group-title">Languages</div>
-        <div class="skill-tags">
-          <span class="tag">Python</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">HTML5</span>
-          <span class="tag">CSS3</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">⚡</div>
-        <div class="skill-group-title">Frameworks & Libraries</div>
-        <div class="skill-tags">
-          <span class="tag">Django</span>
-          <span class="tag">Django REST Framework</span>
-          <span class="tag">Django Channels</span>
-          <span class="tag">FastAPI</span>
-          <span class="tag">Flask</span>
-          <span class="tag">Celery</span>
-          <span class="tag">Angular</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">🤖</div>
-        <div class="skill-group-title">GenAI & LLM</div>
-        <div class="skill-tags">
-          <span class="tag">LangChain</span>
-          <span class="tag">LangGraph</span>
-          <span class="tag">RAG</span>
-          <span class="tag">Prompt Engineering</span>
-          <span class="tag">Groq APIs</span>
-          <span class="tag">Amazon Polly</span>
-          <span class="tag">Azure Speech</span>
-          <span class="tag">Google Speech</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">🗄️</div>
-        <div class="skill-group-title">Databases</div>
-        <div class="skill-tags">
-          <span class="tag">PostgreSQL</span>
-          <span class="tag">MySQL</span>
-          <span class="tag">MongoDB</span>
-          <span class="tag">SQLAlchemy</span>
-          <span class="tag">Alembic</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">🔁</div>
-        <div class="skill-group-title">ETL & Data Pipelines</div>
-        <div class="skill-tags">
-          <span class="tag">Apache Airflow</span>
-          <span class="tag">Pandas</span>
-          <span class="tag">NumPy</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">☁️</div>
-        <div class="skill-group-title">Cloud & DevOps</div>
-        <div class="skill-tags">
-          <span class="tag">AWS S3</span>
-          <span class="tag">AWS Lambda</span>
-          <span class="tag">AWS SQS</span>
-          <span class="tag">Docker</span>
-          <span class="tag">Git</span>
-          <span class="tag">GitHub</span>
-          <span class="tag">GitLab</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="container">
-    <div class="reveal">
-      <div class="section-label">// work_history</div>
-      <h2 class="section-title">Experience</h2>
-      <div class="divider"></div>
-    </div>
-    <div class="timeline">
-
-      <div class="exp-item reveal">
-        <div class="exp-dot-wrap">
-          <div class="exp-dot">🚀</div>
-        </div>
-        <div class="exp-card">
-          <div class="exp-header">
-            <div class="exp-role">Python Developer</div>
-            <div class="exp-period">07/2024 — Present</div>
-          </div>
-          <div class="exp-company">Wappnet Systems Pvt. Ltd. · Ahmedabad</div>
-          <div class="exp-bullets">
-            <div class="exp-bullet">Built a conversational bot using Django with WebSockets for real-time communication, integrating speech services via Groq APIs, Amazon Polly, Azure, and Google Speech.</div>
-            <div class="exp-bullet">Implemented GenAI capabilities using RAG methodology and advanced prompt strategies with LangChain.</div>
-            <div class="exp-bullet">Developed a product recommendation engine using FastAPI, LangChain, and LangGraph with node-based multi-prompt agentic workflows.</div>
-            <div class="exp-bullet">Managed dynamic schema migration with SQLAlchemy and Alembic for efficient data handling at scale.</div>
-            <div class="exp-bullet">Utilized Pandas for data analysis, manipulation, and visualization; integrated third-party APIs into existing applications.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="exp-item reveal">
-        <div class="exp-dot-wrap">
-          <div class="exp-dot">💼</div>
-        </div>
-        <div class="exp-card">
-          <div class="exp-header">
-            <div class="exp-role">Python Django – Angular Developer</div>
-            <div class="exp-period">04/2022 — 07/2024</div>
-          </div>
-          <div class="exp-company">Swan Softweb Solutions · Ahmedabad</div>
-          <div class="exp-bullets">
-            <div class="exp-bullet">Optimized application performance, dramatically reducing response times from 15–20 minutes to under one second.</div>
-            <div class="exp-bullet">Architected RESTful APIs with Django REST Framework, achieving a 40% reduction in mobile data retrieval latency.</div>
-            <div class="exp-bullet">Integrated JWT-based authentication and authorization across all applications, strengthening API security.</div>
-            <div class="exp-bullet">Maintained 90%+ unit test coverage, enforcing high code quality through GitHub pull request reviews.</div>
-            <div class="exp-bullet">Built interactive UI components (charts, tables, forms) using Angular Material for responsive user experiences.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="exp-item reveal">
-        <div class="exp-dot-wrap">
-          <div class="exp-dot">🎓</div>
-        </div>
-        <div class="exp-card">
-          <div class="exp-header">
-            <div class="exp-role">Internship Trainee – Python Django</div>
-            <div class="exp-period">10/2021 — 03/2022</div>
-          </div>
-          <div class="exp-company">InfoLabz · Ahmedabad</div>
-          <div class="exp-bullets">
-            <div class="exp-bullet">Gained hands-on experience with Django framework — project setup, URL routing, views, middleware, template bindings, and static/media file management.</div>
-            <div class="exp-bullet">Built an IoT project using Arduino UNO, integrating Django APIs to handle and store device data in real-time.</div>
-            <div class="exp-bullet">Displayed filtered IoT data dynamically on templates with continuous API polling for live record updates.</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="container">
-    <div class="reveal">
-      <div class="section-label">// key_projects</div>
-      <h2 class="section-title">Featured Work</h2>
-      <div class="divider"></div>
-    </div>
-    <div class="projects-grid">
-      <div class="project-card reveal">
-        <div class="project-num">01</div>
-        <div class="project-icon">🗣️</div>
-        <div class="project-title">Conversational AI Bot</div>
-        <div class="project-desc">Real-time voice-capable chatbot with WebSocket support, multi-provider speech integration (Amazon Polly, Azure, Google, Groq), and GenAI-powered responses using RAG.</div>
-        <div class="project-tech">
-          <span class="tech-tag">Django</span>
-          <span class="tech-tag">WebSockets</span>
-          <span class="tech-tag">LangChain</span>
-          <span class="tech-tag">RAG</span>
-          <span class="tech-tag">Amazon Polly</span>
-          <span class="tech-tag">Groq</span>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-num">02</div>
-        <div class="project-icon">🛒</div>
-        <div class="project-title">AI Product Recommendation Engine</div>
-        <div class="project-desc">Agentic recommendation system with node-based multi-prompt workflows, dynamic schema handling, and enhanced accuracy through LangGraph state machines.</div>
-        <div class="project-tech">
-          <span class="tech-tag">FastAPI</span>
-          <span class="tech-tag">LangGraph</span>
-          <span class="tech-tag">LangChain</span>
-          <span class="tech-tag">SQLAlchemy</span>
-          <span class="tech-tag">Alembic</span>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-num">03</div>
-        <div class="project-icon">⚡</div>
-        <div class="project-title">High-Performance API Suite</div>
-        <div class="project-desc">Optimized web application backend reducing response times from 20 minutes to sub-second. Built scalable REST APIs cutting mobile data latency by 40%.</div>
-        <div class="project-tech">
-          <span class="tech-tag">Django REST Framework</span>
-          <span class="tech-tag">JWT</span>
-          <span class="tech-tag">PostgreSQL</span>
-          <span class="tech-tag">Angular</span>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-num">04</div>
-        <div class="project-icon">🔌</div>
-        <div class="project-title">IoT Data Dashboard</div>
-        <div class="project-desc">Real-time IoT monitoring system using Arduino UNO with Django backend, live data polling, and dynamic template rendering for continuous device data visualization.</div>
-        <div class="project-tech">
-          <span class="tech-tag">Django</span>
-          <span class="tech-tag">Arduino UNO</span>
-          <span class="tech-tag">REST APIs</span>
-          <span class="tech-tag">Real-time Polling</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education">
-  <div class="container">
-    <div class="reveal">
-      <div class="section-label">// education</div>
-      <h2 class="section-title">Academic Background</h2>
-      <div class="divider"></div>
-    </div>
-    <div class="edu-card reveal">
-      <div class="edu-icon">🎓</div>
-      <div>
-        <div class="edu-degree">Bachelor of Computer Applications — Web Development</div>
-        <div class="edu-school">President Institute of Computer Application</div>
-        <div class="edu-location">📍 Ahmedabad, India &nbsp;·&nbsp; Graduated May 2022</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="container">
-    <div class="contact-box reveal">
-      <div class="section-label">// let's_connect</div>
-      <h2 class="section-title">Get In Touch</h2>
-      <p style="color:var(--muted);margin-top:1rem;font-size:0.9rem;line-height:1.7;">
-        I'm open to backend, GenAI, and full-stack Python opportunities.<br>
-        Let's build something impactful together.
-      </p>
-      <div class="contact-links">
-        <a class="contact-link" href="mailto:hiteshkumar01724@gmail.com">
-          <span>✉️</span> hiteshkumar01724@gmail.com
-        </a>
-        <a class="contact-link" href="tel:+919057831452">
-          <span>📞</span> +91 9057831452
-        </a>
-        <a class="contact-link" href="https://linkedin.com/in/hitesh-kumar-b73059302" target="_blank">
-          <span>🔗</span> LinkedIn Profile
-        </a>
-        <a class="contact-link" href="#">
-          <span>📄</span> Download Resume
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <span style="color:var(--accent)">⬡</span> &nbsp;Designed &amp; built by Hitesh Kumar · Python Developer · Ahmedabad, India
-</footer>
-
-<script>
-  // THEME TOGGLE
-  const toggle = document.getElementById('themeToggle');
-  const html = document.documentElement;
-  const saved = localStorage.getItem('theme') || 'dark';
-  html.setAttribute('data-theme', saved);
-
-  toggle.addEventListener('click', () => {
-    const cur = html.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  });
-
-  // SCROLL REVEAL
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hitesh Kumar — Python Developer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ─── TOKENS ─────────────────────────────────── */
+      :root {
+        --bg: #0a0e17;
+        --bg2: #111827;
+        --bg3: #1a2235;
+        --surface: #161d2e;
+        --border: rgba(99, 210, 255, 0.12);
+        --accent: #3de8b0;
+        --accent2: #63d2ff;
+        --accent3: #ff6b6b;
+        --text: #e2e8f5;
+        --muted: #7b8db0;
+        --glow: rgba(61, 232, 176, 0.18);
+        --glow2: rgba(99, 210, 255, 0.14);
+        --card: rgba(22, 29, 46, 0.85);
+        --radius: 14px;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Syne", sans-serif;
       }
-    });
-  }, { threshold: 0.1 });
+      [data-theme="light"] {
+        --bg: #f0f4ff;
+        --bg2: #e4eaf8;
+        --bg3: #d8e2f5;
+        --surface: #ffffff;
+        --border: rgba(30, 100, 180, 0.13);
+        --accent: #0a9e72;
+        --accent2: #1a72c0;
+        --accent3: #d63c3c;
+        --text: #0f172a;
+        --muted: #4a5a80;
+        --glow: rgba(10, 158, 114, 0.1);
+        --glow2: rgba(26, 114, 192, 0.1);
+        --card: rgba(255, 255, 255, 0.9);
+      }
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+      /* ─── RESET ──────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition:
+          background 0.4s,
+          color 0.4s;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      ul {
+        list-style: none;
+      }
 
-  // TYPEWRITER for terminal
-  const lines = document.querySelectorAll('.terminal-body > div');
-  lines.forEach((line, i) => {
-    line.style.opacity = '0';
-    setTimeout(() => {
-      line.style.transition = 'opacity 0.3s';
-      line.style.opacity = '1';
-    }, 600 + i * 180);
-  });
-</script>
-</body>
+      /* ─── SCROLLBAR ───────────────────────────────── */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 99px;
+      }
+
+      /* ─── NOISE OVERLAY ──────────────────────────── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.5;
+      }
+
+      /* ─── NAV ────────────────────────────────────── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2.5rem;
+        background: rgba(10, 14, 23, 0.75);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        transition: background 0.4s;
+      }
+      [data-theme="light"] nav {
+        background: rgba(240, 244, 255, 0.8);
+      }
+
+      .nav-logo {
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+      }
+      .nav-logo span {
+        color: var(--muted);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+      .nav-links a {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+        transition: color 0.2s;
+        position: relative;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: width 0.3s;
+      }
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      /* ─── THEME TOGGLE ────────────────────────────── */
+      .theme-btn {
+        width: 38px;
+        height: 22px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 99px;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.3s;
+        flex-shrink: 0;
+      }
+      .theme-btn::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--accent);
+        transition:
+          transform 0.3s,
+          background 0.3s;
+      }
+      [data-theme="light"] .theme-btn::after {
+        transform: translateX(16px);
+      }
+
+      /* ─── HERO ────────────────────────────────────── */
+      #hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 8rem 2.5rem 4rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        align-items: center;
+      }
+
+      /* grid bg lines */
+      #hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(
+          ellipse 80% 80% at 50% 50%,
+          black 40%,
+          transparent 100%
+        );
+        pointer-events: none;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        border-radius: 99px;
+        padding: 0.3rem 0.9rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.08em;
+        animation: fadeUp 0.7s ease both;
+      }
+      .hero-badge .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 1.8s infinite;
+      }
+
+      .hero-name {
+        font-size: clamp(3rem, 6vw, 5.5rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        animation: fadeUp 0.7s 0.1s ease both;
+      }
+      .hero-name .accent-line {
+        display: block;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-tagline {
+        margin-top: 1.2rem;
+        font-family: var(--mono);
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.8;
+        animation: fadeUp 0.7s 0.2s ease both;
+        max-width: 420px;
+      }
+      .hero-tagline .hl {
+        color: var(--accent2);
+      }
+
+      .hero-cta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        animation: fadeUp 0.7s 0.3s ease both;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        padding: 0.8rem 1.8rem;
+        background: var(--accent);
+        color: #0a0e17;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 0 24px var(--glow);
+        text-transform: uppercase;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 36px var(--glow);
+      }
+
+      .btn-secondary {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        padding: 0.8rem 1.8rem;
+        background: transparent;
+        color: var(--text);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        text-transform: uppercase;
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent2);
+        background: var(--glow2);
+      }
+
+      /* ─── TERMINAL CARD ──────────────────────────── */
+      .terminal-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.4),
+          0 0 0 1px var(--border);
+        animation: fadeUp 0.9s 0.3s ease both;
+        position: relative;
+        z-index: 1;
+      }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: var(--bg3);
+        border-bottom: 1px solid var(--border);
+      }
+      .terminal-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .d1 {
+        background: #ff5f57;
+      }
+      .d2 {
+        background: #ffbd2e;
+      }
+      .d3 {
+        background: #28c840;
+      }
+      .terminal-title {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-left: auto;
+        margin-right: auto;
+        letter-spacing: 0.05em;
+      }
+      .terminal-body {
+        padding: 1.4rem 1.6rem;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 2;
+      }
+      .t-prompt {
+        color: var(--accent);
+      }
+      .t-cmd {
+        color: var(--text);
+      }
+      .t-comment {
+        color: var(--muted);
+      }
+      .t-string {
+        color: var(--accent2);
+      }
+      .t-num {
+        color: var(--accent3);
+      }
+      .t-key {
+        color: #c792ea;
+      }
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 14px;
+        background: var(--accent);
+        vertical-align: middle;
+        animation: blink 1s step-end infinite;
+      }
+
+      /* ─── SECTION COMMONS ────────────────────────── */
+      section {
+        padding: 6rem 2.5rem;
+        position: relative;
+        z-index: 1;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section-label {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 0.6rem;
+      }
+      .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+      .section-sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 520px;
+        line-height: 1.7;
+        margin-bottom: 3.5rem;
+      }
+      .divider {
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 2px;
+        margin-bottom: 3rem;
+      }
+
+      /* ─── ABOUT ──────────────────────────────────── */
+      #about {
+        background: var(--bg2);
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 5rem;
+        align-items: center;
+      }
+      .about-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem;
+        text-align: center;
+        transition:
+          border-color 0.3s,
+          transform 0.3s;
+      }
+      .stat-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-3px);
+      }
+      .stat-num {
+        font-family: var(--mono);
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.3rem;
+      }
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .about-text p {
+        color: var(--muted);
+        line-height: 1.85;
+        margin-bottom: 1.2rem;
+        font-size: 0.95rem;
+      }
+      .about-text p strong {
+        color: var(--text);
+      }
+      .about-contact {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        margin-top: 1.8rem;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .contact-item .icon {
+        color: var(--accent2);
+        font-size: 1rem;
+      }
+
+      /* ─── SKILLS ─────────────────────────────────── */
+      #skills {
+      }
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .skill-group {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.8rem;
+        transition:
+          border-color 0.3s,
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .skill-group:hover {
+        border-color: var(--accent);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px var(--glow);
+      }
+      .skill-group-icon {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+      .skill-group-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--accent2);
+        letter-spacing: 0.05em;
+      }
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .tag {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        padding: 0.3rem 0.75rem;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .tag:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ─── EXPERIENCE ─────────────────────────────── */
+      #experience {
+        background: var(--bg2);
+      }
+      .timeline {
+        position: relative;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 16px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
+      }
+      .exp-item {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+      .exp-dot-wrap {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+      .exp-dot {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--bg3);
+        border: 2px solid var(--accent);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0 16px var(--glow);
+        font-size: 0.85rem;
+      }
+      .exp-card {
+        flex: 1;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.8rem;
+        transition: border-color 0.3s;
+      }
+      .exp-card:hover {
+        border-color: var(--accent);
+      }
+      .exp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+      }
+      .exp-role {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+      .exp-period {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--accent);
+        padding: 0.25rem 0.7rem;
+        background: var(--glow);
+        border-radius: 99px;
+        border: 1px solid var(--accent);
+      }
+      .exp-company {
+        color: var(--accent2);
+        font-size: 0.88rem;
+        margin-bottom: 1.2rem;
+        font-weight: 600;
+      }
+      .exp-bullets {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .exp-bullet {
+        display: flex;
+        gap: 0.8rem;
+        align-items: flex-start;
+        font-size: 0.86rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .exp-bullet::before {
+        content: "▸";
+        color: var(--accent);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ─── PROJECTS / HIGHLIGHT ───────────────────── */
+      #projects {
+      }
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+      .project-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.8rem;
+        position: relative;
+        overflow: hidden;
+        transition:
+          border-color 0.3s,
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .project-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s;
+      }
+      .project-card:hover::before {
+        transform: scaleX(1);
+      }
+      .project-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      }
+      .project-num {
+        font-family: var(--mono);
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--border);
+        position: absolute;
+        top: 1rem;
+        right: 1.4rem;
+        line-height: 1;
+        user-select: none;
+        transition: color 0.3s;
+      }
+      .project-card:hover .project-num {
+        color: var(--glow2);
+      }
+      .project-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .project-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+      }
+      .project-desc {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 1.2rem;
+      }
+      .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .tech-tag {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        padding: 0.2rem 0.6rem;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        color: var(--accent2);
+        border-radius: 4px;
+      }
+
+      /* ─── EDUCATION ──────────────────────────────── */
+      #education {
+        background: var(--bg2);
+      }
+      .edu-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        max-width: 700px;
+        transition: border-color 0.3s;
+      }
+      .edu-card:hover {
+        border-color: var(--accent);
+      }
+      .edu-icon {
+        font-size: 2.5rem;
+      }
+      .edu-degree {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+      }
+      .edu-school {
+        color: var(--accent2);
+        font-size: 0.88rem;
+        margin-bottom: 0.3rem;
+      }
+      .edu-location {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      /* ─── CONTACT ────────────────────────────────── */
+      #contact {
+        text-align: center;
+      }
+      .contact-box {
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 3.5rem 3rem;
+        box-shadow: 0 0 60px var(--glow);
+      }
+      .contact-box .section-title {
+        font-size: 2.5rem;
+      }
+      .contact-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2.5rem;
+      }
+      .contact-link {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--muted);
+        padding: 0.75rem 1.4rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        transition:
+          border-color 0.3s,
+          color 0.3s,
+          background 0.3s;
+      }
+      .contact-link:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--glow);
+      }
+
+      /* ─── FOOTER ─────────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+      }
+
+      /* ─── ANIMATIONS ─────────────────────────────── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 0 0 var(--glow);
+        }
+        50% {
+          opacity: 0.7;
+          box-shadow: 0 0 0 4px var(--glow);
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* ─── SCROLL REVEAL ──────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ─── RESPONSIVE ─────────────────────────────── */
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+        nav {
+          padding: 1rem 1.2rem;
+        }
+        .nav-links {
+          gap: 1.2rem;
+        }
+        .nav-links a {
+          font-size: 0.72rem;
+        }
+      }
+      @media (max-width: 600px) {
+        section {
+          padding: 4rem 1.2rem;
+        }
+        #hero {
+          padding: 7rem 1.2rem 3rem;
+        }
+        .nav-links {
+          display: none;
+        }
+        .exp-item {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .timeline::before {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo"><span>~/</span>hitesh-kumar</div>
+      <div style="display: flex; align-items: center; gap: 1.5rem">
+        <ul class="nav-links">
+          <li><a href="#about">about</a></li>
+          <li><a href="#skills">skills</a></li>
+          <li><a href="#experience">experience</a></li>
+          <li><a href="#projects">projects</a></li>
+          <li><a href="#contact">contact</a></li>
+        </ul>
+        <button
+          class="theme-btn"
+          id="themeToggle"
+          title="Toggle theme"
+        ></button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">
+            <span class="dot"></span> Available for opportunities
+          </div>
+          <h1 class="hero-name">
+            Hitesh<br />
+            <span class="accent-line">Kumar</span>
+          </h1>
+          <p class="hero-tagline">
+            Python Developer · <span class="hl">Backend Architect</span> · GenAI
+            Engineer<br />
+            3+ years building scalable APIs, ETL pipelines,<br />
+            and LLM-powered applications.
+          </p>
+          <div class="hero-cta">
+            <a class="btn-primary" href="#contact">get in touch</a>
+            <a class="btn-secondary" href="#experience">view work ↓</a>
+          </div>
+        </div>
+        <div class="terminal-card">
+
+          <div class="terminal-card">
+            <div class="terminal-bar">
+            <div class="terminal-dot d1"></div>
+            <div class="terminal-dot d2"></div>
+            <div class="terminal-dot d3"></div>
+            <div class="terminal-title">hitesh.py</div>
+            <!-- keep your existing terminal code here -->
+          </div>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 1.5rem;
+              padding: 15px;
+            "
+          >
+            <img
+              src="my-photo.png"
+              alt="Hitesh Kumar"
+              style="
+                width: 220px;
+                height: 220px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--accent);
+                box-shadow: 0 0 30px var(--glow);
+              "
+            />
+          </div>
+          <div class="terminal-body">
+            <div>
+              <span class="t-prompt">❯ </span
+              ><span class="t-cmd">python hitesh.py</span>
+            </div>
+            <br />
+            <div>
+              <span class="t-key">class</span>
+              <span class="t-string">HiteshKumar</span>:
+            </div>
+            <div>
+              &nbsp;&nbsp;<span class="t-comment"
+                ># Python Developer | GenAI Enthusiast</span
+              >
+            </div>
+            <br />
+            <div>
+              &nbsp;&nbsp;<span class="t-key">experience</span> =
+              <span class="t-num">3</span
+              ><span class="t-comment"> # years+</span>
+            </div>
+            <div>&nbsp;&nbsp;<span class="t-key">stack</span> = [</div>
+            <div>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Django"</span>,
+              <span class="t-string">"FastAPI"</span>,
+            </div>
+            <div>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"LangChain"</span>,
+              <span class="t-string">"LangGraph"</span>,
+            </div>
+            <div>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-string">"Airflow"</span>,
+              <span class="t-string">"AWS"</span>
+            </div>
+            <div>&nbsp;&nbsp;]</div>
+            <div>
+              &nbsp;&nbsp;<span class="t-key">location</span> =
+              <span class="t-string">"Ahmedabad, India"</span>
+            </div>
+            <br />
+            <div>
+              &nbsp;&nbsp;<span class="t-key">passion</span> =
+              <span class="t-string">"Clean code &</span>
+            </div>
+            <div>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                class="t-string"
+                >scalable systems"</span
+              >
+            </div>
+            <br />
+            <div>
+              <span class="t-prompt">❯ </span><span class="cursor"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+        <div class="about-grid">
+          <div class="reveal">
+            <div class="about-stats">
+              <div class="stat-card">
+                <div class="stat-num">3+</div>
+                <div class="stat-label">Years Experience</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">40%</div>
+                <div class="stat-label">Latency Reduced</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">90%+</div>
+                <div class="stat-label">Test Coverage</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">∞</div>
+                <div class="stat-label">Lines of Coffee</div>
+              </div>
+            </div>
+          </div>
+          <div class="reveal">
+            <div class="section-label">// about_me</div>
+            <h2 class="section-title">Backend Dev<br />meets AI Builder</h2>
+            <div class="divider"></div>
+            <div class="about-text">
+              <p>
+                I'm a Python developer with <strong>3+ years</strong> of
+                experience crafting robust backend systems using
+                <strong>Django, Flask, and FastAPI</strong>. My work spans REST
+                APIs, real-time WebSocket systems, and data pipelines powered by
+                Apache Airflow.
+              </p>
+              <p>
+                Recently, I've been deeply immersed in
+                <strong>Generative AI</strong> — building conversational bots,
+                product recommendation engines, and RAG-based systems using
+                <strong>LangChain and LangGraph</strong>. I thrive at the
+                intersection of clean architecture and emerging AI capabilities.
+              </p>
+              <p>
+                I'm passionate about <strong>performance optimization</strong>,
+                having reduced response times from 20 minutes to under one
+                second, and maintaining high-quality code with thorough testing.
+              </p>
+            </div>
+            <div class="about-contact">
+              <div class="contact-item">
+                <span class="icon">📍</span> Ahmedabad, Gujarat, India
+              </div>
+              <div class="contact-item">
+                <span class="icon">📞</span> +91 9057831452
+              </div>
+              <div class="contact-item">
+                <span class="icon">✉️</span> hiteshkumar01724@gmail.com
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="container">
+        <div class="reveal">
+          <div class="section-label">// tech_stack</div>
+          <h2 class="section-title">Skills &amp; Tools</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">🐍</div>
+            <div class="skill-group-title">Languages</div>
+            <div class="skill-tags">
+              <span class="tag">Python</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">HTML5</span>
+              <span class="tag">CSS3</span>
+            </div>
+          </div>
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">⚡</div>
+            <div class="skill-group-title">Frameworks & Libraries</div>
+            <div class="skill-tags">
+              <span class="tag">Django</span>
+              <span class="tag">Django REST Framework</span>
+              <span class="tag">Django Channels</span>
+              <span class="tag">FastAPI</span>
+              <span class="tag">Flask</span>
+              <span class="tag">Celery</span>
+              <span class="tag">Angular</span>
+            </div>
+          </div>
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">🤖</div>
+            <div class="skill-group-title">GenAI & LLM</div>
+            <div class="skill-tags">
+              <span class="tag">LangChain</span>
+              <span class="tag">LangGraph</span>
+              <span class="tag">RAG</span>
+              <span class="tag">Prompt Engineering</span>
+              <span class="tag">Groq APIs</span>
+              <span class="tag">Amazon Polly</span>
+              <span class="tag">Azure Speech</span>
+              <span class="tag">Google Speech</span>
+            </div>
+          </div>
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">🗄️</div>
+            <div class="skill-group-title">Databases</div>
+            <div class="skill-tags">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">MongoDB</span>
+              <span class="tag">SQLAlchemy</span>
+              <span class="tag">Alembic</span>
+            </div>
+          </div>
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">🔁</div>
+            <div class="skill-group-title">ETL & Data Pipelines</div>
+            <div class="skill-tags">
+              <span class="tag">Apache Airflow</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">NumPy</span>
+            </div>
+          </div>
+          <div class="skill-group reveal">
+            <div class="skill-group-icon">☁️</div>
+            <div class="skill-group-title">Cloud & DevOps</div>
+            <div class="skill-tags">
+              <span class="tag">AWS S3</span>
+              <span class="tag">AWS Lambda</span>
+              <span class="tag">AWS SQS</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Git</span>
+              <span class="tag">GitHub</span>
+              <span class="tag">GitLab</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <div class="container">
+        <div class="reveal">
+          <div class="section-label">// work_history</div>
+          <h2 class="section-title">Experience</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="timeline">
+          <div class="exp-item reveal">
+            <div class="exp-dot-wrap">
+              <div class="exp-dot">🚀</div>
+            </div>
+            <div class="exp-card">
+              <div class="exp-header">
+                <div class="exp-role">Python Developer</div>
+                <div class="exp-period">07/2024 — Present</div>
+              </div>
+              <div class="exp-company">
+                Wappnet Systems Pvt. Ltd. · Ahmedabad
+              </div>
+              <div class="exp-bullets">
+                <div class="exp-bullet">
+                  Built a conversational bot using Django with WebSockets for
+                  real-time communication, integrating speech services via Groq
+                  APIs, Amazon Polly, Azure, and Google Speech.
+                </div>
+                <div class="exp-bullet">
+                  Implemented GenAI capabilities using RAG methodology and
+                  advanced prompt strategies with LangChain.
+                </div>
+                <div class="exp-bullet">
+                  Developed a product recommendation engine using FastAPI,
+                  LangChain, and LangGraph with node-based multi-prompt agentic
+                  workflows.
+                </div>
+                <div class="exp-bullet">
+                  Managed dynamic schema migration with SQLAlchemy and Alembic
+                  for efficient data handling at scale.
+                </div>
+                <div class="exp-bullet">
+                  Utilized Pandas for data analysis, manipulation, and
+                  visualization; integrated third-party APIs into existing
+                  applications.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-item reveal">
+            <div class="exp-dot-wrap">
+              <div class="exp-dot">💼</div>
+            </div>
+            <div class="exp-card">
+              <div class="exp-header">
+                <div class="exp-role">Python Django – Angular Developer</div>
+                <div class="exp-period">04/2022 — 07/2024</div>
+              </div>
+              <div class="exp-company">Swan Softweb Solutions · Ahmedabad</div>
+              <div class="exp-bullets">
+                <div class="exp-bullet">
+                  Optimized application performance, dramatically reducing
+                  response times from 15–20 minutes to under one second.
+                </div>
+                <div class="exp-bullet">
+                  Architected RESTful APIs with Django REST Framework, achieving
+                  a 40% reduction in mobile data retrieval latency.
+                </div>
+                <div class="exp-bullet">
+                  Integrated JWT-based authentication and authorization across
+                  all applications, strengthening API security.
+                </div>
+                <div class="exp-bullet">
+                  Maintained 90%+ unit test coverage, enforcing high code
+                  quality through GitHub pull request reviews.
+                </div>
+                <div class="exp-bullet">
+                  Built interactive UI components (charts, tables, forms) using
+                  Angular Material for responsive user experiences.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-item reveal">
+            <div class="exp-dot-wrap">
+              <div class="exp-dot">🎓</div>
+            </div>
+            <div class="exp-card">
+              <div class="exp-header">
+                <div class="exp-role">Internship Trainee – Python Django</div>
+                <div class="exp-period">10/2021 — 03/2022</div>
+              </div>
+              <div class="exp-company">InfoLabz · Ahmedabad</div>
+              <div class="exp-bullets">
+                <div class="exp-bullet">
+                  Gained hands-on experience with Django framework — project
+                  setup, URL routing, views, middleware, template bindings, and
+                  static/media file management.
+                </div>
+                <div class="exp-bullet">
+                  Built an IoT project using Arduino UNO, integrating Django
+                  APIs to handle and store device data in real-time.
+                </div>
+                <div class="exp-bullet">
+                  Displayed filtered IoT data dynamically on templates with
+                  continuous API polling for live record updates.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="container">
+        <div class="reveal">
+          <div class="section-label">// key_projects</div>
+          <h2 class="section-title">Featured Work</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="projects-grid">
+          <div class="project-card reveal">
+            <div class="project-num">01</div>
+            <div class="project-icon">🗣️</div>
+            <div class="project-title">Conversational AI Bot</div>
+            <div class="project-desc">
+              Real-time voice-capable chatbot with WebSocket support,
+              multi-provider speech integration (Amazon Polly, Azure, Google,
+              Groq), and GenAI-powered responses using RAG.
+            </div>
+            <div class="project-tech">
+              <span class="tech-tag">Django</span>
+              <span class="tech-tag">WebSockets</span>
+              <span class="tech-tag">LangChain</span>
+              <span class="tech-tag">RAG</span>
+              <span class="tech-tag">Amazon Polly</span>
+              <span class="tech-tag">Groq</span>
+            </div>
+          </div>
+          <div class="project-card reveal">
+            <div class="project-num">02</div>
+            <div class="project-icon">🛒</div>
+            <div class="project-title">AI Product Recommendation Engine</div>
+            <div class="project-desc">
+              Agentic recommendation system with node-based multi-prompt
+              workflows, dynamic schema handling, and enhanced accuracy through
+              LangGraph state machines.
+            </div>
+            <div class="project-tech">
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">LangGraph</span>
+              <span class="tech-tag">LangChain</span>
+              <span class="tech-tag">SQLAlchemy</span>
+              <span class="tech-tag">Alembic</span>
+            </div>
+          </div>
+          <div class="project-card reveal">
+            <div class="project-num">03</div>
+            <div class="project-icon">⚡</div>
+            <div class="project-title">High-Performance API Suite</div>
+            <div class="project-desc">
+              Optimized web application backend reducing response times from 20
+              minutes to sub-second. Built scalable REST APIs cutting mobile
+              data latency by 40%.
+            </div>
+            <div class="project-tech">
+              <span class="tech-tag">Django REST Framework</span>
+              <span class="tech-tag">JWT</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Angular</span>
+            </div>
+          </div>
+          <div class="project-card reveal">
+            <div class="project-num">04</div>
+            <div class="project-icon">🔌</div>
+            <div class="project-title">IoT Data Dashboard</div>
+            <div class="project-desc">
+              Real-time IoT monitoring system using Arduino UNO with Django
+              backend, live data polling, and dynamic template rendering for
+              continuous device data visualization.
+            </div>
+            <div class="project-tech">
+              <span class="tech-tag">Django</span>
+              <span class="tech-tag">Arduino UNO</span>
+              <span class="tech-tag">REST APIs</span>
+              <span class="tech-tag">Real-time Polling</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+      <div class="container">
+        <div class="reveal">
+          <div class="section-label">// education</div>
+          <h2 class="section-title">Academic Background</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="edu-card reveal">
+          <div class="edu-icon">🎓</div>
+          <div>
+            <div class="edu-degree">
+              Bachelor of Computer Applications — Web Development
+            </div>
+            <div class="edu-school">
+              President Institute of Computer Application
+            </div>
+            <div class="edu-location">
+              📍 Ahmedabad, India &nbsp;·&nbsp; Graduated May 2022
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="contact-box reveal">
+          <div class="section-label">// let's_connect</div>
+          <h2 class="section-title">Get In Touch</h2>
+          <p
+            style="
+              color: var(--muted);
+              margin-top: 1rem;
+              font-size: 0.9rem;
+              line-height: 1.7;
+            "
+          >
+            I'm open to backend, GenAI, and full-stack Python opportunities.<br />
+            Let's build something impactful together.
+          </p>
+          <div class="contact-links">
+            <a class="contact-link" href="mailto:hiteshkumar01724@gmail.com">
+              <span>✉️</span> hiteshkumar01724@gmail.com
+            </a>
+            <a class="contact-link" href="tel:+919057831452">
+              <span>📞</span> +91 9057831452
+            </a>
+            <a
+              class="contact-link"
+              href="https://linkedin.com/in/hitesh-kumar-b73059302"
+              target="_blank"
+            >
+              <span>🔗</span> LinkedIn Profile
+            </a>
+            <a class="contact-link" href="#">
+              <span>📄</span> Download Resume
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <span style="color: var(--accent)">⬡</span> &nbsp;Designed &amp; built by
+      Hitesh Kumar · Python Developer · Ahmedabad, India
+    </footer>
+
+    <script>
+      // THEME TOGGLE
+      const toggle = document.getElementById("themeToggle");
+      const html = document.documentElement;
+      const saved = localStorage.getItem("theme") || "dark";
+      html.setAttribute("data-theme", saved);
+
+      toggle.addEventListener("click", () => {
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "dark" ? "light" : "dark";
+        html.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      });
+
+      // SCROLL REVEAL
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e, i) => {
+            if (e.isIntersecting) {
+              setTimeout(() => e.target.classList.add("visible"), i * 80);
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      // TYPEWRITER for terminal
+      const lines = document.querySelectorAll(".terminal-body > div");
+      lines.forEach((line, i) => {
+        line.style.opacity = "0";
+        setTimeout(
+          () => {
+            line.style.transition = "opacity 0.3s";
+            line.style.opacity = "1";
+          },
+          600 + i * 180,
+        );
+      });
+    </script>
+  </body>
 </html>
